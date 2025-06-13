@@ -1,5 +1,5 @@
 ARG S6_OVERLAY_VERSION=v3.2.1.0
-FROM harbor.sorakh.io/hub/socheatsok78/s6-overlay-distribution:${S6_OVERLAY_VERSION} AS s6-overlay
+FROM harbor.sorakh.io/hub/socheatsok78/s6-overlay:${S6_OVERLAY_VERSION} AS s6-overlay
 
 FROM harbor.sorakh.io/hub/alpine:latest AS gh
 ARG TARGETARCH
@@ -9,7 +9,7 @@ WORKDIR /tmp/gh
 RUN tar -xzf /tmp/gh.tar.gz -C /tmp/gh --strip-components=1
 
 FROM harbor.sorakh.io/hub/alpine:latest
-RUN apk add --no-cache bash curl git
+RUN apk add --no-cache bash curl git ca-certificates
 COPY --from=gh --link /tmp/gh /usr/local/
 COPY --link --from=s6-overlay / /
 ENTRYPOINT [ "/init" ]
